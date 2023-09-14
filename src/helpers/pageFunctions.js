@@ -104,6 +104,8 @@ export function createCityElement(cityInfo) {
   cityElement.appendChild(headingElement);
   cityElement.appendChild(infoContainer);
 
+  const unorderedList = document.querySelector('#cities');
+  unorderedList.appendChild(cityElement);
   return cityElement;
 }
 
@@ -117,6 +119,11 @@ export async function handleSearch(event) {
   const searchInput = document.getElementById('search-input');
   const searchValue = searchInput.value;
   const retorno = await searchCities(searchValue);
-  retorno.forEach(async (retu) => getWeatherByCity(retu.url));
+  const cityPromise = retorno.map((retu) => getWeatherByCity(retu.url));
+  console.log(cityPromise);
+  Promise.all(cityPromise).then((city) => city.forEach((cidade) => {
+    const listaCidades = document.querySelector('#cities');
+    listaCidades.appendChild(createCityElement(cidade));
+  }));
   // seu código aqui
 }
